@@ -1,52 +1,135 @@
-# Prerequisites
-*.d
+```
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-# Object files
-*.o
-*.ko
-*.obj
-*.elf
+// Estrutura de dados para frutas
+typedef struct {
+    int codigo;
+    char nome[50];
+    int quantidade;
+    float preco;
+} Fruta;
+// Estrutura de dados para lista de frutas
+typedef struct ListaFrutas {
+    Fruta* fruta;
+    struct ListaFrutas* prox;
+} ListaFrutas;
+// Função para criar nova fruta
+Fruta* criarFruta(int codigo, char* nome, int quantidade, float preco) {
+    Fruta* novaFruta = (Fruta*) malloc(sizeof(Fruta));
+    novaFruta->codigo = codigo;
+    strcpy(novaFruta->nome, nome);
+    novaFruta->quantidade = quantidade;
+    novaFruta->preco = preco;
+    return novaFruta;
+}
 
-# Linker output
-*.ilk
-*.map
-*.exp
+// Função para cadastrar fruta
+ListaFrutas* cadastrarFruta(ListaFrutas* lista) {
+    int codigo;
+    char nome[50];
+    int quantidade;
+    float preco;
 
-# Precompiled Headers
-*.gch
-*.pch
+    printf("Digite o código da fruta: ");
+    scanf("%d", &codigo);
 
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
+    ListaFrutas* atual = lista;
+    while (atual != NULL) {
+        if (atual->fruta->codigo == codigo) {
+            printf("Código já existente!\n");
+            return lista;
+        }
+        atual = atual->prox;
+    }
 
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
+    printf("Digite o nome da fruta: ");
+    scanf("%s", nome);
+    printf("Digite a quantidade da fruta: ");
+    scanf("%d", &quantidade);
+    printf("Digite o preço da fruta: ");
+    scanf("%f", &preco);
 
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
+    Fruta* novaFruta = criarFruta(codigo, nome, quantidade, preco);
+    ListaFrutas* novaLista = (ListaFrutas*) malloc(sizeof(ListaFrutas));
+    novaLista->fruta = novaFruta;
+    novaLista->prox = lista;
+    return novaLista;
+}
 
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
+// Função para listar frutas
+void listarFrutas(ListaFrutas* lista) {
+    ListaFrutas* atual = lista;
+    while (atual != NULL) {
+        printf("Código: %d\n", atual->fruta->codigo);
+        printf("Nome: %s\n", atual->fruta->nome);
+        printf("Quantidade: %d\n", atual->fruta->quantidade);
+        printf("Preço: %.2f\n\n", atual->fruta->preco);
+        atual = atual->prox;
+    }
+}
 
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
+// Função para buscar fruta
+Fruta* buscarFruta(ListaFrutas* lista, int codigo) {
+    ListaFrutas* atual = lista;
+    while (atual != NULL) {
+        if (atual->fruta->codigo == codigo) {
+            return atual->fruta;
+        }
+        atual = atual->prox;
+    }
+    return NULL;
+}
+
+// Função para alterar fruta
+void alterarFruta(ListaFrutas* lista, int codigo) {
+    Fruta* frutaEncontrada = buscarFruta(lista, codigo);
+    if (frutaEncontrada != NULL) {
+        printf("Digite o novo nome da fruta: ");
+        scanf("%s", frutaEncontrada->nome);
+        printf("Digite a nova quantidade da fruta: ");
+        scanf("%d", &frutaEncontrada->quantidade);
+        printf("Digite o novo preço da fruta: ");
+        scanf("%f", &frutaEncontrada->preco);
+    } else {
+        printf("Fruta não encontrada!\n");
+    }
+}
+
+// Função para excluir fruta
+ListaFrutas* excluirFruta(ListaFrutas* lista, int codigo) {
+    ListaFrutas* anterior = NULL;
+    ListaFrutas* atual = lista;
+
+    while (atual != NULL) {
+        if (atual->fruta->codigo == codigo) {
+            if (atual->fruta->quantidade > 0) {
+                printf("Não é possível excluir fruta com estoque!\n");
+                return lista;
+            }
+
+            if (anterior == NULL) {
+                lista = atual->prox;
+            } else {
+                anterior->prox = atual->prox;
+            }
+
+            free(atual->fruta);
+            free(atual);
+            return lista;
+        }
+
+        anterior = atual;
+        atual = atual->prox;
+    }
+
+    printf("Fruta não encontrada!\n");
+    return lista;
+}
+
+// Função para vender fruta
+void venderFruta(ListaFrutas* lista, int codigo, int quantidade) {
+    Fruta* frutaEncontrada = buscarFruta(lista, codigo);
+    if (fruta
+```
